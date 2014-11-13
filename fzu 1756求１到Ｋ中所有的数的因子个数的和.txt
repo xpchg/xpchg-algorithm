@@ -1,0 +1,77 @@
+求n的所有真因子的和。
+由n = p1^a1*p2^a2...pr^ar.
+
+再由生成函数得(1+p1+p1^2...+p1^a1)*(1+p2+p2^2...+p2^a2)...(1+pr+pr^2...pr^ar).
+展开之后就是所求的答案了。
+#include <iostream>
+#include <math.h>
+#include <stdio.h>
+#include <algorithm>
+#define N 1000
+using namespace std;
+int isprime[1000];
+int cnt;
+
+
+bool isok (int v)
+{
+    for (int i = 0; isprime[i]*isprime[i] <= v; i++)
+    if (v % isprime[i] == 0) return false;
+    return true;
+}
+
+void getprime ()
+{
+    cnt = 2;
+    isprime[0] = 2;
+    isprime[1] = 3;
+    for (int i = 5; i < N; i++)
+    {
+        if (isok (i)) isprime[cnt++] = i;
+    }
+}
+
+int fun (int n,int a)
+{
+    int ans = 1;
+    for (int i = 0; i < a; i++)
+    ans *= n;
+    ans--;
+    ans /= (n-1);
+    return ans;
+}
+
+int main ()
+{
+    getprime();
+    int n;
+    while (scanf ("%d",&n) == 1)
+    {
+        if (n <= 1)
+        {
+            printf ("0\n");
+            continue;
+        }
+        int t = n;
+        int total = 1;
+        int count,i = 0;
+        while (n && i < cnt)
+        {
+            count = 1;
+            if (n%isprime[i] == 0 && n)
+            {
+                while (n % isprime[i] == 0 && n)
+                {
+                    count++;
+                    n /= isprime[i];
+                }
+                total *= fun (isprime[i],count);
+            }
+            if (n < isprime[i] || n < 1) break;
+            i++;
+        }
+        if (n > 1) total *= fun (n,2);
+        printf ("%d\n",total-t);
+    }
+    return 0;
+}

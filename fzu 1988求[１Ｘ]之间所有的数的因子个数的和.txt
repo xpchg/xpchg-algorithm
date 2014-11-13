@@ -1,0 +1,53 @@
+等价于求x/1+x/2+...x/x;
+
+
+#include<cstdio>
+#include<algorithm>
+#include<vector>
+#include<iostream>
+#include<cmath>
+
+using namespace std;
+
+int G(int k)
+{
+	int sum  = 0 ;
+	int now = k , next , val;
+	while(now > 0)
+	{
+		val = k / now;
+		next = k / (val+1);
+		sum += val*(now -next);
+		now = next;
+	}
+	return sum;
+}
+
+int solve(int M)
+{
+	int low = 1 , high = 55592635;
+	while(low <= high)
+	{
+		int mid = (low+high)>>1;
+		int g = G(mid);
+		if(g==M)return mid;
+		if(g>M)high = mid-1;
+		else low = mid+1;
+	}
+	return -1;
+}
+
+int main()
+{
+	int T , t = 1;
+	for(scanf("%d",&T) ; T--  ; )
+	{
+		int M , ans;
+		scanf("%d",&M);
+		printf("Case %d: ",t++);
+		ans = solve(M);
+		if(ans == -1)puts("impossible!");
+		else printf("%d\n",ans);
+	}
+	return 0;
+}
